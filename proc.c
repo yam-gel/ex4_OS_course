@@ -90,6 +90,7 @@ found:
   p->pid = nextpid++;
   //MODIFIED
   p->priority = 0;
+  p->scheduled_counter=0;
 
   release(&ptable.lock);
 
@@ -366,9 +367,29 @@ scheduler(void)
       swtch(&(c->scheduler), p->context);
       switchkvm();
 
+      
       // Process is done running for now.
       // It should have changed its p->state before coming back.
       c->proc = 0;
+
+
+      // MODIFIED
+      //here we take the pointer p one process backwards if needed -> after p++ we will be on the same process
+      int ticks_to_run = 1;
+      // ticks to run is implementation of power
+      for (int i=0; i<p->priority; i++)
+        ticks_to_run=2*ticks_to_run;
+      if (p->scheduled_counter < ticks_to_run)
+      {
+        p->scheduled_counter++;
+        p--;
+      }
+      else
+      {
+        //we move to another process
+        p->scheduled_counter=0;
+      }
+
     }
     release(&ptable.lock);
 
