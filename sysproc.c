@@ -76,7 +76,6 @@ sys_sleep(void)
   release(&tickslock);
   return 0;
 }
-
 // return how many clock tick interrupts have occurred
 // since start.
 int
