@@ -88,6 +88,8 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
+  //MODIFIED
+  p->priority = 0;
 
   release(&ptable.lock);
 
@@ -141,6 +143,8 @@ userinit(void)
 
   safestrcpy(p->name, "initcode", sizeof(p->name));
   p->cwd = namei("/");
+
+  
 
   // this assignment to p->state lets other cores
   // run this process. the acquire forces the above
@@ -220,6 +224,22 @@ fork(void)
 
   return pid;
 }
+
+//MODIFIED
+int getprio(void)
+{
+  struct proc *process = myproc();
+  return process->priority;
+}
+
+int setprio(int p)
+{
+  struct proc *process = myproc();
+  process->priority=p;
+  return 0;
+}
+
+
 
 // Exit the current process.  Does not return.
 // An exited process remains in the zombie state

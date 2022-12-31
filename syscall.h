@@ -20,3 +20,6 @@
 #define SYS_link   19
 #define SYS_mkdir  20
 #define SYS_close  21
+//MODIFIED
+#define SYS_getprio 22
+#define SYS_setprio 23
