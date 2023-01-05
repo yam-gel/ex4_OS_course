@@ -363,7 +363,7 @@ scheduler(void)
       c->proc = p;
       switchuvm(p);
       p->state = RUNNING;
-
+      
       swtch(&(c->scheduler), p->context);
       switchkvm();
 
@@ -372,14 +372,14 @@ scheduler(void)
       // It should have changed its p->state before coming back.
       c->proc = 0;
 
-
       // MODIFIED
       //here we take the pointer p one process backwards if needed -> after p++ we will be on the same process
       int ticks_to_run = 1;
-      // ticks to run is implementation of power
+      // ticks to run is implementation of 2^prio
       for (int i=0; i<p->priority; i++)
         ticks_to_run=2*ticks_to_run;
-      if (p->scheduled_counter < ticks_to_run)
+      
+      if (p->scheduled_counter <= ticks_to_run && p-> state == RUNNABLE)
       {
         p->scheduled_counter++;
         p--;
@@ -389,7 +389,6 @@ scheduler(void)
         //we move to another process
         p->scheduled_counter=0;
       }
-
     }
     release(&ptable.lock);
 
